@@ -3,10 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 
-import '../data/categories_repository.dart';
-import '../data/expenses_repository.dart';
-import '../data/models/category.dart';
-import '../data/models/expense.dart';
+import '../models/category.dart';
+import '../models/expense.dart';
+import '../services/categories_repository.dart';
+import '../services/expenses_repository.dart';
 import '../shared/firebase_error_mapper.dart';
 import '../shared/firestore_list_snapshot.dart';
 import '../shared/snackbars.dart';

@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'models/category.dart';
+import '../models/category.dart';
 
 class CategoryPresets {
   CategoryPresets._();

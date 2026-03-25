@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'firestore_paths.dart';
-import 'models/expense.dart';
+import '../models/expense.dart';
 import '../shared/firestore_list_snapshot.dart';
+import 'firestore_paths.dart';
 
 class ExpensesRepository {
   ExpensesRepository({FirebaseFirestore? firestore})
@@ -17,20 +17,20 @@ class ExpensesRepository {
         .limit(limit)
         .snapshots()
         .map((snapshot) {
-          final pendingIds = snapshot.docs
-              .where((d) => d.metadata.hasPendingWrites)
-              .map((d) => d.id)
-              .toSet();
-          final items = snapshot.docs
-              .map((doc) => Expense.fromFirestore(id: doc.id, data: doc.data()))
-              .toList(growable: false);
-          return FirestoreListSnapshot<Expense>(
-            items: items,
-            isFromCache: snapshot.metadata.isFromCache,
-            hasPendingWrites: snapshot.metadata.hasPendingWrites,
-            pendingIds: pendingIds,
-          );
-        });
+      final pendingIds = snapshot.docs
+          .where((d) => d.metadata.hasPendingWrites)
+          .map((d) => d.id)
+          .toSet();
+      final items = snapshot.docs
+          .map((doc) => Expense.fromFirestore(id: doc.id, data: doc.data()))
+          .toList(growable: false);
+      return FirestoreListSnapshot<Expense>(
+        items: items,
+        isFromCache: snapshot.metadata.isFromCache,
+        hasPendingWrites: snapshot.metadata.hasPendingWrites,
+        pendingIds: pendingIds,
+      );
+    });
   }
 
   Future<void> createExpense(String uid, Expense expense) async {
@@ -49,3 +49,4 @@ class ExpensesRepository {
     await _firestore.doc(FirestorePaths.expenseDoc(uid, expenseId)).delete();
   }
 }
+

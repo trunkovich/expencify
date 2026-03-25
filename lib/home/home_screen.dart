@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../categories/categories_screen.dart';
-import '../data/categories_repository.dart';
-import '../data/firestore_service.dart';
+import '../services/categories_repository.dart';
+import '../services/firestore_service.dart';
 import '../expenses/expenses_screen.dart';
 import '../shared/firebase_error_mapper.dart';
 
