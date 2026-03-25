@@ -2,6 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../shared/snackbars.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -22,23 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _showError(Object error) {
-    final message = switch (error) {
-      FirebaseAuthException(code: final code) => switch (code) {
-          'invalid-email' => 'Неверный формат email.',
-          'user-disabled' => 'Пользователь отключён.',
-          'user-not-found' => 'Пользователь не найден.',
-          'wrong-password' => 'Неверный пароль.',
-          'email-already-in-use' => 'Email уже используется.',
-          'weak-password' => 'Слишком простой пароль.',
-          'operation-not-allowed' => 'Провайдер не включён в Firebase Console.',
-          _ => 'Ошибка входа: $code',
-        },
-      _ => 'Ошибка: $error',
-    };
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
-    );
+    Snackbars.showError(context, error);
   }
 
   Future<void> _signIn() async {
@@ -46,9 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Введите email и пароль.')),
-      );
+      Snackbars.showMessage(context, 'Enter email and password.');
       return;
     }
 
@@ -70,9 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Введите email и пароль.')),
-      );
+      Snackbars.showMessage(context, 'Enter email and password.');
       return;
     }
 
@@ -188,4 +170,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-

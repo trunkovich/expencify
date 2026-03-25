@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import '../categories/categories_screen.dart';
 import '../data/categories_repository.dart';
 import '../data/firestore_service.dart';
+import '../expenses/expenses_screen.dart';
+import '../shared/firebase_error_mapper.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -32,7 +34,10 @@ class HomeScreen extends StatelessWidget {
                 stream: service.watchCategoriesCount(uid),
                 builder: (context, snapshot) {
                   if (snapshot.hasError) {
-                    return Text('Firestore error: ${snapshot.error}');
+                    return Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(FirebaseErrorMapper.message(snapshot.error!)),
+                    );
                   }
                   if (!snapshot.hasData) {
                     return const CircularProgressIndicator();
@@ -59,6 +64,15 @@ class HomeScreen extends StatelessWidget {
                         ),
                         child: const Text('Manage categories'),
                       ),
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => ExpensesScreen(),
+                          ),
+                        ),
+                        child: const Text('Manage expenses'),
+                      ),
                     ],
                   );
                 },
@@ -67,4 +81,3 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-

@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firestore_paths.dart';
 import 'models/category.dart';
 import 'category_presets.dart';
+import '../shared/firestore_list_snapshot.dart';
 
 class CategoriesRepository {
   CategoriesRepository({FirebaseFirestore? firestore})
@@ -10,19 +11,31 @@ class CategoriesRepository {
 
   final FirebaseFirestore _firestore;
 
-  Stream<List<Category>> watchCategories(String uid) {
+  Stream<FirestoreListSnapshot<Category>> watchCategories(String uid) {
     return _firestore
         .collection(FirestorePaths.categoriesCol(uid))
         .orderBy(Category.fieldSortOrder)
         .snapshots()
-        .map(
-          (snapshot) => snapshot.docs
-              .map((doc) => Category.fromFirestore(
-                    id: doc.id,
-                    data: doc.data(),
-                  ))
-              .toList(growable: false),
-        );
+        .map((snapshot) {
+          final pendingIds = snapshot.docs
+              .where((d) => d.metadata.hasPendingWrites)
+              .map((d) => d.id)
+              .toSet();
+          final items = snapshot.docs
+              .map(
+                (doc) => Category.fromFirestore(
+                  id: doc.id,
+                  data: doc.data(),
+                ),
+              )
+              .toList(growable: false);
+          return FirestoreListSnapshot<Category>(
+            items: items,
+            isFromCache: snapshot.metadata.isFromCache,
+            hasPendingWrites: snapshot.metadata.hasPendingWrites,
+            pendingIds: pendingIds,
+          );
+        });
   }
 
   Future<void> createOrUpdateCategory(String uid, Category category) async {
@@ -54,4 +67,3 @@ class CategoriesRepository {
     return true;
   }
 }
-

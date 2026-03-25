@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../data/categories_repository.dart';
 import '../data/models/category.dart';
+import '../shared/firebase_error_mapper.dart';
+import '../shared/firestore_list_snapshot.dart';
+import '../shared/snackbars.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -91,7 +94,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       updatedAt: now,
     );
 
-    await _repo.createOrUpdateCategory(uid, category);
+    try {
+      await _repo.createOrUpdateCategory(uid, category);
+    } catch (e) {
+      if (!mounted) return;
+      Snackbars.showError(context, e);
+    }
   }
 
   Future<void> _editCategory(Category category) async {
@@ -113,7 +121,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       updatedAt: Timestamp.now(),
     );
 
-    await _repo.createOrUpdateCategory(_uid, updated);
+    try {
+      await _repo.createOrUpdateCategory(_uid, updated);
+    } catch (e) {
+      if (!mounted) return;
+      Snackbars.showError(context, e);
+    }
   }
 
   Future<void> _deleteCategory(Category category) async {
@@ -135,7 +148,12 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
       ),
     );
     if (ok != true) return;
-    await _repo.deleteCategory(_uid, category.id);
+    try {
+      await _repo.deleteCategory(_uid, category.id);
+    } catch (e) {
+      if (!mounted) return;
+      Snackbars.showError(context, e);
+    }
   }
 
   @override
@@ -150,45 +168,80 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         title: const Text('Categories'),
         actions: const [],
       ),
-      body: StreamBuilder<List<Category>>(
+      body: StreamBuilder<FirestoreListSnapshot<Category>>(
         stream: _repo.watchCategories(uid),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Text(FirebaseErrorMapper.message(snapshot.error!)),
+              ),
+            );
           }
           if (!snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(16),
+                  child: Text(
+                    'Loading… If you are offline and opened this screen for the first time, '
+                    'Firestore may have no cached data yet.',
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              );
+            }
             return const Center(child: CircularProgressIndicator());
           }
 
-          final categories = snapshot.data!;
+          final data = snapshot.data!;
+          final categories = data.items;
           if (categories.isEmpty) {
             return const Center(child: Text('No categories yet'));
           }
 
-          return ListView.separated(
-            padding: const EdgeInsets.only(bottom: 96),
-            itemCount: categories.length,
-            separatorBuilder: (_, index) => const Divider(height: 1),
-            itemBuilder: (context, index) {
-              final c = categories[index];
-              return ListTile(
-                leading: Text(c.emoji ?? '•', style: const TextStyle(fontSize: 20)),
-                title: Text(c.name),
-                subtitle: Text('id: ${c.id}'),
-                onTap: () => _editCategory(c),
-                trailing: IconButton(
-                  onPressed: () => _deleteCategory(c),
-                  icon: const Icon(Icons.delete_outline),
+          return Column(
+            children: [
+              Expanded(
+                child: ListView.separated(
+                  padding: const EdgeInsets.only(bottom: 96),
+                  itemCount: categories.length,
+                  separatorBuilder: (_, index) => const Divider(height: 1),
+                  itemBuilder: (context, index) {
+                    final c = categories[index];
+                    final isPending = data.pendingIds.contains(c.id);
+                    return ListTile(
+                      leading:
+                          Text(c.emoji ?? '•', style: const TextStyle(fontSize: 20)),
+                      title: Text(c.name),
+                      subtitle: Text('id: ${c.id}'),
+                      onTap: () => _editCategory(c),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (isPending) ...[
+                            const Icon(Icons.sync, size: 16),
+                            const SizedBox(width: 4),
+                          ],
+                          IconButton(
+                            onPressed: () => _deleteCategory(c),
+                            icon: const Icon(Icons.delete_outline),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
+              ),
+            ],
           );
         },
       ),
-      floatingActionButton: StreamBuilder<List<Category>>(
+      floatingActionButton: StreamBuilder<FirestoreListSnapshot<Category>>(
         stream: _repo.watchCategories(uid),
         builder: (context, snapshot) {
-          final current = snapshot.data ?? const <Category>[];
+          final current = snapshot.data?.items ?? const <Category>[];
           return FloatingActionButton(
             onPressed: () => _createCategory(current),
             tooltip: 'Add category',
