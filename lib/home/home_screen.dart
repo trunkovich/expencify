@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../categories/categories_screen.dart';
 import '../expenses/expenses_screen.dart';
+import '../reports/reports_screen.dart';
 import '../services/categories_repository.dart';
+import '../services/firestore_paths.dart';
 import '../services/firestore_service.dart';
 import '../shared/firebase_error_mapper.dart';
 import '../shared/snackbars.dart';
@@ -22,6 +24,47 @@ class _HomeScreenState extends State<HomeScreen> {
   final _firestore = FirebaseFirestore.instance;
 
   String get _uid => FirebaseAuth.instance.currentUser!.uid;
+
+  Future<void> _seedExpenses({int count = 40}) async {
+    await _runTest('seed $count expenses', () async {
+      final categoriesSnap = await _firestore
+          .collection(FirestorePaths.categoriesCol(_uid))
+          .limit(200)
+          .get();
+      final categoryIds = categoriesSnap.docs.map((d) => d.id).toList(growable: false);
+      if (categoryIds.isEmpty) {
+        throw StateError('No categories found. Create presets first.');
+      }
+
+      final now = DateTime.now();
+      final batch = _firestore.batch();
+
+      for (var i = 0; i < count; i++) {
+        final createdAt = Timestamp.now();
+        final daysAgo = i % 35; // spread over ~1 month
+        final date = DateTime(now.year, now.month, now.day)
+            .subtract(Duration(days: daysAgo))
+            .add(Duration(hours: (i * 3) % 24, minutes: (i * 7) % 60));
+
+        final categoryId = categoryIds[i % categoryIds.length];
+        final amount = ((i * 137) % 4900) / 100 + 1; // 1.00..50.00-ish
+        final id = _firestore.collection('tmp').doc().id;
+
+        final ref = _firestore.doc(FirestorePaths.expenseDoc(_uid, id));
+        batch.set(ref, <String, Object?>{
+          'amount': amount,
+          'currency': 'USD',
+          'date': Timestamp.fromDate(date),
+          'categoryId': categoryId,
+          'note': i % 4 == 0 ? 'seed #$i' : null,
+          'createdAt': createdAt,
+          'updatedAt': createdAt,
+        });
+      }
+
+      await batch.commit();
+    });
+  }
 
   Future<void> _runTest(String name, Future<void> Function() action) async {
     try {
@@ -168,6 +211,20 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         child: const Text('Manage expenses'),
+                      ),
+                      const SizedBox(height: 12),
+                      FilledButton(
+                        onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute<void>(
+                            builder: (_) => const ReportsScreen(),
+                          ),
+                        ),
+                        child: const Text('Reports'),
+                      ),
+                      const SizedBox(height: 12),
+                      OutlinedButton(
+                        onPressed: () => _seedExpenses(count: 40),
+                        child: const Text('Generate sample expenses (40)'),
                       ),
                       const SizedBox(height: 20),
                       const Divider(),

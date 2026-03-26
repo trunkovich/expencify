@@ -33,6 +33,39 @@ class ExpensesRepository {
     });
   }
 
+  Stream<FirestoreListSnapshot<Expense>> watchExpensesInRange(
+    String uid, {
+    required DateTime start,
+    required DateTime endExclusive,
+    int limit = 2000,
+  }) {
+    final startTs = Timestamp.fromDate(start);
+    final endTs = Timestamp.fromDate(endExclusive);
+
+    return _firestore
+        .collection(FirestorePaths.expensesCol(uid))
+        .where(Expense.fieldDate, isGreaterThanOrEqualTo: startTs)
+        .where(Expense.fieldDate, isLessThan: endTs)
+        .orderBy(Expense.fieldDate, descending: true)
+        .limit(limit)
+        .snapshots()
+        .map((snapshot) {
+      final pendingIds = snapshot.docs
+          .where((d) => d.metadata.hasPendingWrites)
+          .map((d) => d.id)
+          .toSet();
+      final items = snapshot.docs
+          .map((doc) => Expense.fromFirestore(id: doc.id, data: doc.data()))
+          .toList(growable: false);
+      return FirestoreListSnapshot<Expense>(
+        items: items,
+        isFromCache: snapshot.metadata.isFromCache,
+        hasPendingWrites: snapshot.metadata.hasPendingWrites,
+        pendingIds: pendingIds,
+      );
+    });
+  }
+
   Future<void> createExpense(String uid, Expense expense) async {
     await _firestore
         .doc(FirestorePaths.expenseDoc(uid, expense.id))
