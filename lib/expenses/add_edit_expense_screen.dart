@@ -5,8 +5,9 @@ import 'dart:async';
 
 import '../models/category.dart';
 import '../models/expense.dart';
-import '../services/categories_repository.dart';
-import '../services/expenses_repository.dart';
+import '../core/di/locator.dart';
+import '../domain/repositories/categories_repository.dart';
+import '../domain/repositories/expenses_repository.dart';
 import '../shared/firebase_error_mapper.dart';
 import '../shared/firestore_list_snapshot.dart';
 import '../shared/snackbars.dart';
@@ -51,8 +52,8 @@ class AddEditExpenseScreen extends StatefulWidget {
 }
 
 class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
-  final _expensesRepo = ExpensesRepository();
-  final _categoriesRepo = CategoriesRepository();
+  final _expensesRepo = getIt<ExpensesRepository>();
+  final _categoriesRepo = getIt<CategoriesRepository>();
 
   final _amountController = TextEditingController();
   final _currencyController = TextEditingController(text: 'USD');
@@ -60,7 +61,7 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
 
   String? _categoryId;
   DateTime _date = DateTime.now();
-  bool _busy = false;
+  final bool _busy = false;
 
   @override
   void initState() {
@@ -116,7 +117,7 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
     try {
       final now = Timestamp.now();
       final existing = widget.expense;
-      final id = existing?.id ?? FirebaseFirestore.instance.collection('tmp').doc().id;
+      final id = existing?.id ?? getIt<FirebaseFirestore>().collection('tmp').doc().id;
 
       final expense = Expense(
         id: id,
@@ -311,4 +312,3 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
     );
   }
 }
-

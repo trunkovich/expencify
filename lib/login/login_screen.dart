@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 
+import '../core/di/locator.dart';
+import '../domain/repositories/auth_repository.dart';
 import '../shared/snackbars.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -38,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _busy = true);
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      await getIt<AuthRepository>().signInWithEmailPassword(
         email: email,
         password: password,
       );
@@ -60,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() => _busy = true);
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      await getIt<AuthRepository>().registerWithEmailPassword(
         email: email,
         password: password,
       );
@@ -74,20 +74,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _signInWithGoogle() async {
     setState(() => _busy = true);
     try {
-      await GoogleSignIn.instance.initialize();
-      final googleUser = await GoogleSignIn.instance.authenticate();
-
-      final googleAuth = googleUser.authentication;
-      final credential = GoogleAuthProvider.credential(
-        idToken: googleAuth.idToken,
-      );
-
-      await FirebaseAuth.instance.signInWithCredential(credential);
-    } on GoogleSignInException catch (e) {
-      if (e.code == GoogleSignInExceptionCode.canceled) {
-        return;
-      }
-      _showError(e);
+      await getIt<AuthRepository>().signInWithGoogle();
     } catch (e) {
       _showError(e);
     } finally {

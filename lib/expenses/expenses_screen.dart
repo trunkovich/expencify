@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 import '../models/category.dart';
 import '../models/expense.dart';
-import '../services/categories_repository.dart';
-import '../services/expenses_repository.dart';
+import '../core/di/locator.dart';
+import '../domain/repositories/categories_repository.dart';
+import '../domain/repositories/expenses_repository.dart';
 import '../shared/firebase_error_mapper.dart';
 import '../shared/firestore_list_snapshot.dart';
 import '../navigation/app_drawer.dart';
@@ -14,8 +15,8 @@ import 'add_edit_expense_screen.dart';
 class ExpensesScreen extends StatelessWidget {
   ExpensesScreen({super.key});
 
-  final _expensesRepo = ExpensesRepository();
-  final _categoriesRepo = CategoriesRepository();
+  final _expensesRepo = getIt<ExpensesRepository>();
+  final _categoriesRepo = getIt<CategoriesRepository>();
 
   @override
   Widget build(BuildContext context) {

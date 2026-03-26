@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 
 import '../models/category.dart';
 import '../models/expense.dart';
-import '../services/categories_repository.dart';
-import '../services/expenses_repository.dart';
+import '../core/di/locator.dart';
+import '../domain/repositories/categories_repository.dart';
+import '../domain/repositories/expenses_repository.dart';
 import '../shared/firebase_error_mapper.dart';
 import '../shared/firestore_list_snapshot.dart';
 import '../navigation/app_drawer.dart';
@@ -19,8 +20,8 @@ class ReportsScreen extends StatefulWidget {
 }
 
 class _ReportsScreenState extends State<ReportsScreen> {
-  final _categoriesRepo = CategoriesRepository();
-  final _expensesRepo = ExpensesRepository();
+  final _categoriesRepo = getIt<CategoriesRepository>();
+  final _expensesRepo = getIt<ExpensesRepository>();
 
   ReportsRange _range = ReportsRange.month;
 
@@ -131,7 +132,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           Expanded(
                             child: ListView.separated(
                               itemCount: rows.length,
-                              separatorBuilder: (_, __) => const Divider(height: 1),
+                              separatorBuilder: (_, _) => const Divider(height: 1),
                               itemBuilder: (context, index) {
                                 final entry = rows[index];
                                 final category = byId[entry.key];
@@ -196,4 +197,3 @@ class _ReportsScreenState extends State<ReportsScreen> {
     return '$y-$m-$day';
   }
 }
-

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
+import '../core/di/locator.dart';
+import '../domain/repositories/auth_repository.dart';
 
 class AppDrawer extends StatelessWidget {
   const AppDrawer({
@@ -60,7 +62,12 @@ class AppDrawer extends StatelessWidget {
               title: const Text('Logout'),
               onTap: () async {
                 Navigator.of(context).pop(); // close drawer
-                await FirebaseAuth.instance.signOut();
+                await getIt<AuthRepository>().signOut();
+                if (!context.mounted) return;
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  AppRoutes.auth,
+                  (route) => false,
+                );
               },
             ),
           ],
@@ -73,9 +80,9 @@ class AppDrawer extends StatelessWidget {
 class AppRoutes {
   AppRoutes._();
 
+  static const auth = '/auth';
   static const expenses = '/expenses';
   static const reports = '/reports';
   static const categories = '/categories';
   static const debug = '/debug';
 }
-

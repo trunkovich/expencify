@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../expenses/expenses_screen.dart';
 import '../login/login_screen.dart';
+import '../core/di/locator.dart';
+import '../domain/repositories/auth_repository.dart';
 
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
@@ -10,7 +12,7 @@ class AuthGate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
+      stream: getIt<AuthRepository>().authStateChanges(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(

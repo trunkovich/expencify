@@ -3,7 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/category.dart';
-import '../services/categories_repository.dart';
+import '../core/di/locator.dart';
+import '../domain/repositories/categories_repository.dart';
 import '../shared/firebase_error_mapper.dart';
 import '../shared/firestore_list_snapshot.dart';
 import '../shared/snackbars.dart';
@@ -17,7 +18,7 @@ class CategoriesScreen extends StatefulWidget {
 }
 
 class _CategoriesScreenState extends State<CategoriesScreen> {
-  final _repo = CategoriesRepository();
+  final _repo = getIt<CategoriesRepository>();
 
   String get _uid => FirebaseAuth.instance.currentUser!.uid;
 
@@ -78,7 +79,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
 
     final uid = _uid;
     final now = Timestamp.now();
-    final id = FirebaseFirestore.instance.collection('tmp').doc().id;
+    final id = getIt<FirebaseFirestore>().collection('tmp').doc().id;
 
     final minSortOrder = currentCategories.isEmpty
         ? 0

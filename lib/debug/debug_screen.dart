@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../core/di/locator.dart';
+import '../domain/repositories/categories_repository.dart';
 import '../services/firestore_paths.dart';
 import '../navigation/app_drawer.dart';
 import '../shared/firebase_error_mapper.dart';
@@ -15,7 +17,8 @@ class DebugScreen extends StatefulWidget {
 }
 
 class _DebugScreenState extends State<DebugScreen> {
-  final _firestore = FirebaseFirestore.instance;
+  final _firestore = getIt<FirebaseFirestore>();
+  final _categoriesRepo = getIt<CategoriesRepository>();
 
   String get _uid => FirebaseAuth.instance.currentUser!.uid;
 
@@ -32,6 +35,7 @@ class _DebugScreenState extends State<DebugScreen> {
 
   Future<void> _seedExpenses({int count = 40}) async {
     await _runTest('seed $count expenses', () async {
+      await _categoriesRepo.ensureDefaultPresets(_uid);
       final categoriesSnap = await _firestore
           .collection(FirestorePaths.categoriesCol(_uid))
           .limit(200)
