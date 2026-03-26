@@ -29,7 +29,10 @@ class _DebugScreenState extends State<DebugScreen> {
       Snackbars.showMessage(context, 'PASS: $name');
     } catch (e) {
       if (!mounted) return;
-      Snackbars.showMessage(context, 'FAIL: $name → ${FirebaseErrorMapper.message(e)}');
+      Snackbars.showMessage(
+        context,
+        'FAIL: $name → ${FirebaseErrorMapper.message(e)}',
+      );
     }
   }
 
@@ -40,7 +43,9 @@ class _DebugScreenState extends State<DebugScreen> {
           .collection(FirestorePaths.categoriesCol(_uid))
           .limit(200)
           .get();
-      final categoryIds = categoriesSnap.docs.map((d) => d.id).toList(growable: false);
+      final categoryIds = categoriesSnap.docs
+          .map((d) => d.id)
+          .toList(growable: false);
       if (categoryIds.isEmpty) {
         throw StateError('No categories found. Create presets first.');
       }
@@ -78,13 +83,15 @@ class _DebugScreenState extends State<DebugScreen> {
   Future<void> _testWriteOtherUserCategory() {
     return _runTest('write category to other uid (should FAIL)', () async {
       final now = Timestamp.now();
-      await _firestore.doc('users/other-user/categories/rules_probe').set(<String, Object?>{
-        'name': 'Should fail',
-        'emoji': '🚫',
-        'sortOrder': 0,
-        'createdAt': now,
-        'updatedAt': now,
-      });
+      await _firestore
+          .doc('users/other-user/categories/rules_probe')
+          .set(<String, Object?>{
+            'name': 'Should fail',
+            'emoji': '🚫',
+            'sortOrder': 0,
+            'createdAt': now,
+            'updatedAt': now,
+          });
     });
   }
 
@@ -94,11 +101,11 @@ class _DebugScreenState extends State<DebugScreen> {
       await _firestore
           .doc('users/$_uid/categories/rules_probe_invalid_schema')
           .set(<String, Object?>{
-        'name': 'Bad category',
-        'sortOrder': 'not-an-int',
-        'createdAt': now,
-        'updatedAt': now,
-      });
+            'name': 'Bad category',
+            'sortOrder': 'not-an-int',
+            'createdAt': now,
+            'updatedAt': now,
+          });
     });
   }
 
@@ -108,13 +115,13 @@ class _DebugScreenState extends State<DebugScreen> {
       await _firestore
           .doc('users/$_uid/expenses/rules_probe_invalid_schema')
           .set(<String, Object?>{
-        'amount': 'abc',
-        'currency': 'US',
-        'date': now,
-        'categoryId': 'some-category',
-        'createdAt': now,
-        'updatedAt': now,
-      });
+            'amount': 'abc',
+            'currency': 'US',
+            'date': now,
+            'categoryId': 'some-category',
+            'createdAt': now,
+            'updatedAt': now,
+          });
     });
   }
 
@@ -124,12 +131,12 @@ class _DebugScreenState extends State<DebugScreen> {
       await _firestore
           .doc('users/$_uid/categories/rules_probe_extra_field')
           .set(<String, Object?>{
-        'name': 'Extra field',
-        'sortOrder': 1,
-        'createdAt': now,
-        'updatedAt': now,
-        'hacker': true,
-      });
+            'name': 'Extra field',
+            'sortOrder': 1,
+            'createdAt': now,
+            'updatedAt': now,
+            'hacker': true,
+          });
     });
   }
 
@@ -207,4 +214,3 @@ class _DebugScreenState extends State<DebugScreen> {
     );
   }
 }
-

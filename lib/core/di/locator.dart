@@ -15,7 +15,9 @@ final getIt = GetIt.instance;
 void configureDependencies() {
   if (getIt.isRegistered<FirebaseFirestore>()) return;
 
-  getIt.registerLazySingleton<FirebaseFirestore>(() => FirebaseFirestore.instance);
+  getIt.registerLazySingleton<FirebaseFirestore>(
+    () => FirebaseFirestore.instance,
+  );
   getIt.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
   getIt.registerLazySingleton<GoogleSignIn>(() => GoogleSignIn.instance);
 
@@ -26,14 +28,9 @@ void configureDependencies() {
     ),
   );
   getIt.registerLazySingleton<CategoriesRepository>(
-    () => FirestoreCategoriesRepository(
-      firestore: getIt<FirebaseFirestore>(),
-    ),
+    () => FirestoreCategoriesRepository(firestore: getIt<FirebaseFirestore>()),
   );
   getIt.registerLazySingleton<ExpensesRepository>(
-    () => FirestoreExpensesRepository(
-      firestore: getIt<FirebaseFirestore>(),
-    ),
+    () => FirestoreExpensesRepository(firestore: getIt<FirebaseFirestore>()),
   );
 }
-

@@ -46,9 +46,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
               ),
               TextField(
                 controller: controller,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                ),
+                decoration: const InputDecoration(labelText: 'Name'),
               ),
             ],
           ),
@@ -84,8 +82,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     final minSortOrder = currentCategories.isEmpty
         ? 0
         : currentCategories
-            .map((c) => c.sortOrder)
-            .reduce((a, b) => a < b ? a : b);
+              .map((c) => c.sortOrder)
+              .reduce((a, b) => a < b ? a : b);
 
     final category = Category(
       id: id,
@@ -166,10 +164,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Categories'),
-        actions: const [],
-      ),
+      appBar: AppBar(title: const Text('Categories'), actions: const []),
       drawer: const AppDrawer(currentRoute: AppRoutes.categories),
       body: StreamBuilder<FirestoreListSnapshot<Category>>(
         stream: _repo.watchCategories(uid),
@@ -215,8 +210,10 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                     final c = categories[index];
                     final isPending = data.pendingIds.contains(c.id);
                     return ListTile(
-                      leading:
-                          Text(c.emoji ?? '•', style: const TextStyle(fontSize: 20)),
+                      leading: Text(
+                        c.emoji ?? '•',
+                        style: const TextStyle(fontSize: 20),
+                      ),
                       title: Text(c.name),
                       subtitle: Text('id: ${c.id}'),
                       onTap: () => _editCategory(c),
@@ -262,4 +259,3 @@ class _CategoryEditResult {
   final String name;
   final String emoji;
 }
-

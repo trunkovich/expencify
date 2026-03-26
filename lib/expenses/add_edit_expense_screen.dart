@@ -117,7 +117,8 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
     try {
       final now = Timestamp.now();
       final existing = widget.expense;
-      final id = existing?.id ?? getIt<FirebaseFirestore>().collection('tmp').doc().id;
+      final id =
+          existing?.id ?? getIt<FirebaseFirestore>().collection('tmp').doc().id;
 
       final expense = Expense(
         id: id,
@@ -125,7 +126,9 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
         currency: currency,
         date: Timestamp.fromDate(_date),
         categoryId: categoryId!,
-        note: _noteController.text.trim().isEmpty ? null : _noteController.text.trim(),
+        note: _noteController.text.trim().isEmpty
+            ? null
+            : _noteController.text.trim(),
         createdAt: existing?.createdAt ?? now,
         updatedAt: now,
       );
@@ -227,7 +230,8 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
               return const Center(child: Text('Create a category first'));
             }
 
-            final hasSelected = _categoryId != null &&
+            final hasSelected =
+                _categoryId != null &&
                 categories.any((c) => c.id == _categoryId);
             if (_categoryId != null && !hasSelected) {
               // The expense points to a deleted category; require user to re-select.
@@ -240,7 +244,9 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
                 TextField(
                   controller: _amountController,
                   enabled: !_busy,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   decoration: const InputDecoration(
                     labelText: 'Amount',
                     border: OutlineInputBorder(),
@@ -273,11 +279,14 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
                             child: Text('${c.emoji ?? '•'} ${c.name}'),
                           ),
                       ],
-                      onChanged: _busy ? null : (v) => setState(() => _categoryId = v),
+                      onChanged: _busy
+                          ? null
+                          : (v) => setState(() => _categoryId = v),
                     ),
                   ),
                 ),
-                if (widget.expense != null && widget.expense!.categoryId != _categoryId)
+                if (widget.expense != null &&
+                    widget.expense!.categoryId != _categoryId)
                   const Padding(
                     padding: EdgeInsets.only(top: 8),
                     child: Text(
@@ -287,7 +296,9 @@ class _AddEditExpenseScreenState extends State<AddEditExpenseScreen> {
                 const SizedBox(height: 12),
                 OutlinedButton(
                   onPressed: _busy ? null : _pickDate,
-                  child: Text('Date: ${_date.year}-${_date.month.toString().padLeft(2, '0')}-${_date.day.toString().padLeft(2, '0')}'),
+                  child: Text(
+                    'Date: ${_date.year}-${_date.month.toString().padLeft(2, '0')}-${_date.day.toString().padLeft(2, '0')}',
+                  ),
                 ),
                 const SizedBox(height: 12),
                 TextField(

@@ -20,4 +20,3 @@ class ExpenseValidator {
     return null;
   }
 }
-

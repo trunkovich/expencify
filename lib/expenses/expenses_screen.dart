@@ -26,9 +26,7 @@ class ExpensesScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Expenses'),
-      ),
+      appBar: AppBar(title: const Text('Expenses')),
       drawer: const AppDrawer(currentRoute: AppRoutes.expenses),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).push(
@@ -48,7 +46,9 @@ class ExpensesScreen extends StatelessWidget {
             return Center(
               child: Padding(
                 padding: const EdgeInsets.all(16),
-                child: Text(FirebaseErrorMapper.message(categoriesSnapshot.error!)),
+                child: Text(
+                  FirebaseErrorMapper.message(categoriesSnapshot.error!),
+                ),
               ),
             );
           }
@@ -70,9 +70,7 @@ class ExpensesScreen extends StatelessWidget {
 
           final categoriesData = categoriesSnapshot.data!;
           final categories = categoriesData.items;
-          final byId = <String, Category>{
-            for (final c in categories) c.id: c,
-          };
+          final byId = <String, Category>{for (final c in categories) c.id: c};
 
           return StreamBuilder<FirestoreListSnapshot<Expense>>(
             stream: _expensesRepo.watchExpenses(uid),
@@ -81,12 +79,15 @@ class ExpensesScreen extends StatelessWidget {
                 return Center(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
-                    child: Text(FirebaseErrorMapper.message(expensesSnapshot.error!)),
+                    child: Text(
+                      FirebaseErrorMapper.message(expensesSnapshot.error!),
+                    ),
                   ),
                 );
               }
               if (!expensesSnapshot.hasData) {
-                if (expensesSnapshot.connectionState == ConnectionState.waiting) {
+                if (expensesSnapshot.connectionState ==
+                    ConnectionState.waiting) {
                   return const Center(
                     child: Padding(
                       padding: EdgeInsets.all(16),
@@ -116,7 +117,9 @@ class ExpensesScreen extends StatelessWidget {
                       separatorBuilder: (_, index) => const Divider(height: 1),
                       itemBuilder: (context, index) {
                         final e = expenses[index];
-                        final isPending = expensesData.pendingIds.contains(e.id);
+                        final isPending = expensesData.pendingIds.contains(
+                          e.id,
+                        );
                         final category = byId[e.categoryId];
                         final categoryTitle = category == null
                             ? 'Unknown category'
@@ -165,4 +168,3 @@ class ExpensesScreen extends StatelessWidget {
     return '$y-$m-$day';
   }
 }
-

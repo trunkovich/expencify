@@ -1,2 +1,2 @@
-export '../domain/repositories/categories_repository.dart' show CategoriesRepository;
-
+export '../domain/repositories/categories_repository.dart'
+    show CategoriesRepository;

@@ -4,10 +4,7 @@ import '../core/di/locator.dart';
 import '../domain/repositories/auth_repository.dart';
 
 class AppDrawer extends StatelessWidget {
-  const AppDrawer({
-    required this.currentRoute,
-    super.key,
-  });
+  const AppDrawer({required this.currentRoute, super.key});
 
   final String currentRoute;
 
@@ -64,10 +61,9 @@ class AppDrawer extends StatelessWidget {
                 Navigator.of(context).pop(); // close drawer
                 await getIt<AuthRepository>().signOut();
                 if (!context.mounted) return;
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  AppRoutes.auth,
-                  (route) => false,
-                );
+                Navigator.of(
+                  context,
+                ).pushNamedAndRemoveUntil(AppRoutes.auth, (route) => false);
               },
             ),
           ],

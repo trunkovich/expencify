@@ -7,8 +7,8 @@ class FirebaseAuthRepository implements AuthRepository {
   FirebaseAuthRepository({
     required FirebaseAuth auth,
     required GoogleSignIn googleSignIn,
-  })  : _auth = auth,
-        _googleSignIn = googleSignIn;
+  }) : _auth = auth,
+       _googleSignIn = googleSignIn;
 
   final FirebaseAuth _auth;
   final GoogleSignIn _googleSignIn;
@@ -32,7 +32,10 @@ class FirebaseAuthRepository implements AuthRepository {
     required String email,
     required String password,
   }) {
-    return _auth.createUserWithEmailAndPassword(email: email, password: password);
+    return _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
   }
 
   @override
@@ -40,17 +43,15 @@ class FirebaseAuthRepository implements AuthRepository {
     await _googleSignIn.initialize();
     final googleUser = await _googleSignIn.authenticate();
     final googleAuth = googleUser.authentication;
-    final credential = GoogleAuthProvider.credential(idToken: googleAuth.idToken);
+    final credential = GoogleAuthProvider.credential(
+      idToken: googleAuth.idToken,
+    );
     await _auth.signInWithCredential(credential);
   }
 
   @override
   Future<void> signOut() async {
     // Ensure both sessions are cleared.
-    await Future.wait([
-      _googleSignIn.signOut(),
-      _auth.signOut(),
-    ]);
+    await Future.wait([_googleSignIn.signOut(), _auth.signOut()]);
   }
 }
-

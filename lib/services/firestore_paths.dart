@@ -16,4 +16,3 @@ class FirestorePaths {
   static String expenseDoc(String uid, String expenseId) =>
       '${expensesCol(uid)}/$expenseId';
 }
-

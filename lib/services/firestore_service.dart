@@ -4,7 +4,7 @@ import 'firestore_paths.dart';
 
 class FirestoreService {
   FirestoreService({FirebaseFirestore? firestore})
-      : _firestore = firestore ?? FirebaseFirestore.instance;
+    : _firestore = firestore ?? FirebaseFirestore.instance;
 
   final FirebaseFirestore _firestore;
 
@@ -15,4 +15,3 @@ class FirestoreService {
         .map((snapshot) => snapshot.size);
   }
 }
-

@@ -7,12 +7,15 @@ import '../../shared/firestore_list_snapshot.dart';
 
 class FirestoreExpensesRepository implements ExpensesRepository {
   FirestoreExpensesRepository({required FirebaseFirestore firestore})
-      : _firestore = firestore;
+    : _firestore = firestore;
 
   final FirebaseFirestore _firestore;
 
   @override
-  Stream<FirestoreListSnapshot<Expense>> watchExpenses(String uid, {int limit = 200}) {
+  Stream<FirestoreListSnapshot<Expense>> watchExpenses(
+    String uid, {
+    int limit = 200,
+  }) {
     return _firestore
         .collection(FirestorePaths.expensesCol(uid))
         .orderBy(Expense.fieldDate, descending: true)
@@ -59,7 +62,9 @@ class FirestoreExpensesRepository implements ExpensesRepository {
     return _firestore.doc(FirestorePaths.expenseDoc(uid, expenseId)).delete();
   }
 
-  FirestoreListSnapshot<Expense> _mapSnapshot(QuerySnapshot<Map<String, dynamic>> snapshot) {
+  FirestoreListSnapshot<Expense> _mapSnapshot(
+    QuerySnapshot<Map<String, dynamic>> snapshot,
+  ) {
     final pendingIds = snapshot.docs
         .where((d) => d.metadata.hasPendingWrites)
         .map((d) => d.id)
@@ -75,4 +80,3 @@ class FirestoreExpensesRepository implements ExpensesRepository {
     );
   }
 }
-

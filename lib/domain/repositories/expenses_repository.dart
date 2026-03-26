@@ -2,7 +2,10 @@ import '../../models/expense.dart';
 import '../../shared/firestore_list_snapshot.dart';
 
 abstract interface class ExpensesRepository {
-  Stream<FirestoreListSnapshot<Expense>> watchExpenses(String uid, {int limit = 200});
+  Stream<FirestoreListSnapshot<Expense>> watchExpenses(
+    String uid, {
+    int limit = 200,
+  });
 
   Stream<FirestoreListSnapshot<Expense>> watchExpensesInRange(
     String uid, {
@@ -17,4 +20,3 @@ abstract interface class ExpensesRepository {
 
   Future<void> deleteExpense(String uid, String expenseId);
 }
-

@@ -8,7 +8,7 @@ import '../../shared/firestore_list_snapshot.dart';
 
 class FirestoreCategoriesRepository implements CategoriesRepository {
   FirestoreCategoriesRepository({required FirebaseFirestore firestore})
-      : _firestore = firestore;
+    : _firestore = firestore;
 
   final FirebaseFirestore _firestore;
 
@@ -19,25 +19,22 @@ class FirestoreCategoriesRepository implements CategoriesRepository {
         .orderBy(Category.fieldSortOrder)
         .snapshots()
         .map((snapshot) {
-      final pendingIds = snapshot.docs
-          .where((d) => d.metadata.hasPendingWrites)
-          .map((d) => d.id)
-          .toSet();
-      final items = snapshot.docs
-          .map(
-            (doc) => Category.fromFirestore(
-              id: doc.id,
-              data: doc.data(),
-            ),
-          )
-          .toList(growable: false);
-      return FirestoreListSnapshot<Category>(
-        items: items,
-        isFromCache: snapshot.metadata.isFromCache,
-        hasPendingWrites: snapshot.metadata.hasPendingWrites,
-        pendingIds: pendingIds,
-      );
-    });
+          final pendingIds = snapshot.docs
+              .where((d) => d.metadata.hasPendingWrites)
+              .map((d) => d.id)
+              .toSet();
+          final items = snapshot.docs
+              .map(
+                (doc) => Category.fromFirestore(id: doc.id, data: doc.data()),
+              )
+              .toList(growable: false);
+          return FirestoreListSnapshot<Category>(
+            items: items,
+            isFromCache: snapshot.metadata.isFromCache,
+            hasPendingWrites: snapshot.metadata.hasPendingWrites,
+            pendingIds: pendingIds,
+          );
+        });
   }
 
   @override
@@ -70,4 +67,3 @@ class FirestoreCategoriesRepository implements CategoriesRepository {
     return true;
   }
 }
-

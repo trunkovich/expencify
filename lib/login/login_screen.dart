@@ -108,7 +108,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   enabled: !_busy,
                   keyboardType: TextInputType.emailAddress,
                   textInputAction: TextInputAction.next,
-                  autofillHints: const [AutofillHints.username, AutofillHints.email],
+                  autofillHints: const [
+                    AutofillHints.username,
+                    AutofillHints.email,
+                  ],
                   decoration: const InputDecoration(
                     labelText: 'Email',
                     border: OutlineInputBorder(),

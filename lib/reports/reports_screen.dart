@@ -49,7 +49,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                 ButtonSegment(value: ReportsRange.month, label: Text('Month')),
               ],
               selected: {_range},
-              onSelectionChanged: (value) => setState(() => _range = value.single),
+              onSelectionChanged: (value) =>
+                  setState(() => _range = value.single),
             ),
             const SizedBox(height: 12),
             Expanded(
@@ -69,7 +70,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   }
 
                   final categories = categoriesSnapshot.data!.items;
-                  final byId = <String, Category>{for (final c in categories) c.id: c};
+                  final byId = <String, Category>{
+                    for (final c in categories) c.id: c,
+                  };
 
                   return StreamBuilder<FirestoreListSnapshot<Expense>>(
                     stream: _expensesRepo.watchExpensesInRange(
@@ -81,7 +84,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
                       if (expensesSnapshot.hasError) {
                         return Center(
                           child: Text(
-                            FirebaseErrorMapper.message(expensesSnapshot.error!),
+                            FirebaseErrorMapper.message(
+                              expensesSnapshot.error!,
+                            ),
                             textAlign: TextAlign.center,
                           ),
                         );
@@ -92,15 +97,19 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
                       final expenses = expensesSnapshot.data!.items;
                       if (expenses.isEmpty) {
-                        return const Center(child: Text('No expenses for this period'));
+                        return const Center(
+                          child: Text('No expenses for this period'),
+                        );
                       }
 
                       final totals = _sumByCategory(expenses);
                       final rows = totals.entries.toList()
                         ..sort((a, b) => b.value.compareTo(a.value));
 
-                      final totalSum =
-                          totals.values.fold<num>(0, (sum, v) => sum + v);
+                      final totalSum = totals.values.fold<num>(
+                        0,
+                        (sum, v) => sum + v,
+                      );
 
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -115,14 +124,16 @@ class _ReportsScreenState extends State<ReportsScreen> {
                                   const SizedBox(height: 4),
                                   Text(
                                     _formatAmount(totalSum),
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .headlineSmall,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.headlineSmall,
                                   ),
                                   const SizedBox(height: 4),
                                   Text(
                                     '${_formatDate(start)} – ${_formatDate(endExclusive.add(const Duration(days: -1)))}',
-                                    style: Theme.of(context).textTheme.bodySmall,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.bodySmall,
                                   ),
                                 ],
                               ),
@@ -132,7 +143,8 @@ class _ReportsScreenState extends State<ReportsScreen> {
                           Expanded(
                             child: ListView.separated(
                               itemCount: rows.length,
-                              separatorBuilder: (_, _) => const Divider(height: 1),
+                              separatorBuilder: (_, _) =>
+                                  const Divider(height: 1),
                               itemBuilder: (context, index) {
                                 final entry = rows[index];
                                 final category = byId[entry.key];
@@ -159,20 +171,30 @@ class _ReportsScreenState extends State<ReportsScreen> {
     );
   }
 
-  (DateTime start, DateTime endExclusive) _bounds(DateTime now, ReportsRange range) {
+  (DateTime start, DateTime endExclusive) _bounds(
+    DateTime now,
+    ReportsRange range,
+  ) {
     final todayStart = DateTime(now.year, now.month, now.day);
     return switch (range) {
-      ReportsRange.today => (todayStart, todayStart.add(const Duration(days: 1))),
+      ReportsRange.today => (
+        todayStart,
+        todayStart.add(const Duration(days: 1)),
+      ),
       ReportsRange.week => (
-          todayStart.subtract(Duration(days: todayStart.weekday - DateTime.monday)),
-          todayStart
-              .subtract(Duration(days: todayStart.weekday - DateTime.monday))
-              .add(const Duration(days: 7)),
+        todayStart.subtract(
+          Duration(days: todayStart.weekday - DateTime.monday),
         ),
+        todayStart
+            .subtract(Duration(days: todayStart.weekday - DateTime.monday))
+            .add(const Duration(days: 7)),
+      ),
       ReportsRange.month => (
-          DateTime(now.year, now.month, 1),
-          now.month == 12 ? DateTime(now.year + 1, 1, 1) : DateTime(now.year, now.month + 1, 1),
-        ),
+        DateTime(now.year, now.month, 1),
+        now.month == 12
+            ? DateTime(now.year + 1, 1, 1)
+            : DateTime(now.year, now.month + 1, 1),
+      ),
     };
   }
 

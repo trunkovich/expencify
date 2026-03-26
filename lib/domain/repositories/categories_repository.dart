@@ -10,4 +10,3 @@ abstract interface class CategoriesRepository {
 
   Future<bool> ensureDefaultPresets(String uid);
 }
-

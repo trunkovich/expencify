@@ -59,5 +59,4 @@ class DefaultFirebaseOptions {
     projectId: 'pet-expencify',
     storageBucket: 'pet-expencify.firebasestorage.app',
   );
-
 }

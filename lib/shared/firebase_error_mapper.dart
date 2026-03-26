@@ -35,8 +35,10 @@ class FirebaseErrorMapper {
       'wrong-password' => 'Wrong password.',
       'email-already-in-use' => 'Email is already in use.',
       'weak-password' => 'Password is too weak.',
-      'operation-not-allowed' => 'This sign-in method is disabled in Firebase Console.',
-      'network-request-failed' => 'Network error. Check your internet connection.',
+      'operation-not-allowed' =>
+        'This sign-in method is disabled in Firebase Console.',
+      'network-request-failed' =>
+        'Network error. Check your internet connection.',
       _ => 'Auth error (${e.code}): ${e.message ?? ''}'.trim(),
     };
   }
