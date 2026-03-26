@@ -1,17 +1,28 @@
-# expencify
+# Vibe Coding Experiment
 
-A new Flutter project.
+This project was built with the help of Cursor(Auto LLM used).
 
-## Getting Started
+## Expencify
 
-This project is a starting point for a Flutter application.
+This project started as an experiment to see how fast a Flutter + Firebase PoC can be built with an AI coding agent.
 
-A few resources to get you started if this is your first Flutter project:
+The goal was to implement:
+- Firebase Authentication (email/password + Google Sign-In)
+- Cloud Firestore storage with security rules
+- Expenses + categories CRUD
+- Simple reports (today/week/month)
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+I asked the agent to work in small testable steps and I validated each iteration in the app.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+As a result it took only 6 hours to finish it. Only 1 runtime bug and several minor problems were faced.
+
+### Screenshots
+
+![Login page](/screenshots/login.jpeg "Login page")
+![Expenses list](/screenshots/expenses_list.jpeg "Expenses list")
+![Categories list](/screenshots/categories_list.jpeg "Categories list")
+![Add category](/screenshots/add_category.jpeg "Add category")
+![Add expense](/screenshots/add_expense.jpeg "Add expense")
+![Reports (today)](/screenshots/reports_today.jpeg "Reports (today)")
+![Reports (week)](/screenshots/reports_week.jpeg "Reports (week)")
+![Reports (month)](/screenshots/reports_month.jpeg "Reports (month)")
