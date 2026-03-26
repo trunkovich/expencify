@@ -3,6 +3,11 @@ import 'package:flutter/material.dart';
 
 import 'firebase_options.dart';
 import 'auth/auth_gate.dart';
+import 'categories/categories_screen.dart';
+import 'debug/debug_screen.dart';
+import 'expenses/expenses_screen.dart';
+import 'navigation/app_drawer.dart';
+import 'reports/reports_screen.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,6 +27,12 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
       ),
+      routes: {
+        AppRoutes.expenses: (_) => ExpensesScreen(),
+        AppRoutes.reports: (_) => const ReportsScreen(),
+        AppRoutes.categories: (_) => const CategoriesScreen(),
+        AppRoutes.debug: (_) => const DebugScreen(),
+      },
       home: const AuthGate(),
     );
   }

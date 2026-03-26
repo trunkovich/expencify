@@ -7,6 +7,7 @@ import '../services/categories_repository.dart';
 import '../shared/firebase_error_mapper.dart';
 import '../shared/firestore_list_snapshot.dart';
 import '../shared/snackbars.dart';
+import '../navigation/app_drawer.dart';
 
 class CategoriesScreen extends StatefulWidget {
   const CategoriesScreen({super.key});
@@ -168,6 +169,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
         title: const Text('Categories'),
         actions: const [],
       ),
+      drawer: const AppDrawer(currentRoute: AppRoutes.categories),
       body: StreamBuilder<FirestoreListSnapshot<Category>>(
         stream: _repo.watchCategories(uid),
         builder: (context, snapshot) {

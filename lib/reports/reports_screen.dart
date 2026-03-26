@@ -7,6 +7,7 @@ import '../services/categories_repository.dart';
 import '../services/expenses_repository.dart';
 import '../shared/firebase_error_mapper.dart';
 import '../shared/firestore_list_snapshot.dart';
+import '../navigation/app_drawer.dart';
 
 enum ReportsRange { today, week, month }
 
@@ -35,6 +36,7 @@ class _ReportsScreenState extends State<ReportsScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Reports')),
+      drawer: const AppDrawer(currentRoute: AppRoutes.reports),
       body: SafeArea(
         minimum: const EdgeInsets.all(16),
         child: Column(

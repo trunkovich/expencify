@@ -8,6 +8,7 @@ import '../services/categories_repository.dart';
 import '../services/expenses_repository.dart';
 import '../shared/firebase_error_mapper.dart';
 import '../shared/firestore_list_snapshot.dart';
+import '../navigation/app_drawer.dart';
 import 'add_edit_expense_screen.dart';
 
 class ExpensesScreen extends StatelessWidget {
@@ -27,6 +28,7 @@ class ExpensesScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Expenses'),
       ),
+      drawer: const AppDrawer(currentRoute: AppRoutes.expenses),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).push(
           MaterialPageRoute<void>(
